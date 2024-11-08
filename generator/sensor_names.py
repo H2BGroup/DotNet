@@ -1,7 +1,7 @@
 ENGINE_TEMP_NAME = "engine_temp_sensor"
 CABIN_TEMP_NAME = "cabin_temp_sensor"
 OUTSIDE_TEMP_NAME = "outside_temp_sensor"
-BATTERY_TEMP_NAME = "battery_temp_sensor"
+INTAKE_AIR_NAME = "intake_air_temp_sensor"
 
 REAR_LEFT_TIRE_NAME = "rl_tire_sensor"
 REAR_RIGHT_TIRE_NAME = "rr_tire_sensor"
