@@ -10,7 +10,7 @@ public class SensorService : ISensorService
 
     public SensorService(MongoDbService mongoDbService)
     {
-        _sensors = mongoDbService.Database?.GetCollection<Sensor>("measures");
+        _sensors = mongoDbService.Database?.GetCollection<Sensor>("sensors");
     }
 
     public IEnumerable<Sensor> FindAll()

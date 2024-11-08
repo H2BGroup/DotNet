@@ -10,7 +10,7 @@ namespace backend.Controllers;
 [Route("/api/[controller]")]
 public class SensorController : ControllerBase
 {
-    private readonly ISensorService? _sensorService;
+    private readonly ISensorService _sensorService;
 
     public SensorController(ISensorService sensorService)
     {
