@@ -18,4 +18,4 @@ db.createUser(
 );
 
 db.createCollection('sensors');
-db.createCollection('data');
+db.createCollection('measures');
