@@ -1,0 +1,42 @@
+czujniki (x4):
+
+termometr: stopnie Celsjusza
+
+	1. Temperatura silnika: 80-110°C
+
+	2. Temperatura wewnątrz kabiny: 10-30°C
+
+	3. Temperatura na zewnątrz: -20°C do 40°C
+
+	4. Temperatura akumulatora: 5-35°C
+
+
+barometr: mBar
+
+	1. Ciśnienie w oponie lewy tył: 150-350 mBar
+
+	2. Ciśnienie w oponie prawy tył: 150-350 mBar
+
+	3. Ciśnienie w oponie lewy przód: 150-350 mBar
+
+	4. Ciśnienie w oponie prawy przód: 150-350 mBar
+
+potencjometr: (pedał gazu, głośność radia itp): %
+
+	1. Położenie pedału gazu: 0-100%
+
+	2. Kąt skrętu kierownicy: 0-100%
+
+	3. Bateria w samochodach elektrycznych: 0-100%
+
+	4. Głośność radia: 0-100%
+
+parkowania: cm
+
+	1. Odległość od przeszkód lewy tył: 10-150cm
+
+	2. Odległość od przeszkód prawy tył: 10-150cm
+
+	3. Odległość od przeszkód środek tył: 10-150cm
+
+	4. Odległość od przeszkód środek przód: 10-150cm
