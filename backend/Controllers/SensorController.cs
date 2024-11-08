@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.Entities;
+using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
@@ -9,32 +10,31 @@ namespace backend.Controllers;
 [Route("/api/[controller]")]
 public class SensorController : ControllerBase
 {
-    private readonly IMongoCollection<Sensor>? _sensors;
+    private readonly ISensorService? _sensorService;
 
-    public SensorController(MongoDbService mongoDbService)
+    public SensorController(ISensorService sensorService)
     {
-        _sensors = mongoDbService.Database?.GetCollection<Sensor>("sensors");
+        _sensorService = sensorService;
     }
 
     [HttpGet]
     public async Task<IEnumerable<Sensor>> FindAll()
     {
-        return await _sensors.Find(FilterDefinition<Sensor>.Empty).ToListAsync();
+        return _sensorService.FindAll();
     }
 
     [HttpGet]
     [Route("{id}")]
     public async Task<ActionResult<Sensor?>> FindOne(string id)
     {
-        var filter = Builders<Sensor>.Filter.Eq(x => x.Id, id);
-        var sensor = _sensors.Find(filter).FirstOrDefault();
+        var sensor = _sensorService.FindOne(id);
         return sensor is not null ? Ok(sensor) : NotFound();
     }
 
     [HttpPut]
     public async Task<ActionResult> Create(Sensor sensor)
     {
-        await _sensors.InsertOneAsync(sensor);
+        _sensorService.Create(sensor);
         return CreatedAtAction(nameof(FindOne), new {id = sensor.Id}, sensor);
     }
 }

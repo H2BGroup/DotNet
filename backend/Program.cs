@@ -1,4 +1,5 @@
 using backend.Data;
+using backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddTransient<ISensorService, SensorService>();
+builder.Services.AddTransient<IMeasureService, MeasureService>();
 
 var app = builder.Build();
 
