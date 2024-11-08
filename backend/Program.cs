@@ -1,4 +1,5 @@
 using backend.Data;
+using backend.RabbitMq;
 using backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,10 +11,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
 builder.Services.AddTransient<ISensorService, SensorService>();
 builder.Services.AddTransient<IMeasureService, MeasureService>();
 
 var app = builder.Build();
+
+var rabbitMQConsumer = app.Services.GetRequiredService<IRabbitMQConsumer>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
