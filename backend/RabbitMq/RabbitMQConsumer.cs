@@ -1,6 +1,10 @@
-﻿using RabbitMQ.Client;
+﻿using backend.Entities;
+using backend.Services;
+using MongoDB.Bson.IO;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using System.Text.Json;
 
 
 namespace backend.RabbitMq
@@ -9,6 +13,7 @@ namespace backend.RabbitMq
     {
         private IConnection _conntection;
         private IModel _channel;
+        private readonly IMeasureService _measureService;
 
         public RabbitMQConsumer()
         {
@@ -28,15 +33,21 @@ namespace backend.RabbitMq
 
         }
 
-        public void ConsumeMessage<T>(T message)
+        public void ConsumeMessage()
         {
-            var consumer = new AsyncEventingBasicConsumer(_channel);
+            var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine($" [x] Received {message}");
-                return Task.CompletedTask;
+
+                var measure = JsonSerializer.Deserialize<Measure>(message);
+
+                if (measure != null)
+                {
+                    _measureService.Create(measure);
+                }
             };
 
             _channel.BasicConsume("messages", autoAck: true, consumer: consumer);

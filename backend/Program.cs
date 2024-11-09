@@ -19,6 +19,8 @@ var app = builder.Build();
 
 var rabbitMQConsumer = app.Services.GetRequiredService<IRabbitMQConsumer>();
 
+rabbitMQConsumer.ConsumeMessage();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
