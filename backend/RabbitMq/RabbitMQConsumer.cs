@@ -1,6 +1,5 @@
 ﻿using backend.Entities;
 using backend.Services;
-using MongoDB.Bson.IO;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -15,8 +14,9 @@ namespace backend.RabbitMq
         private IModel _channel;
         private readonly IMeasureService _measureService;
 
-        public RabbitMQConsumer()
+        public RabbitMQConsumer(IMeasureService measureService)
         {
+            _measureService = measureService;
             InitializeConntection();
         }
 
@@ -42,7 +42,8 @@ namespace backend.RabbitMq
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine($" [x] Received {message}");
 
-                var measure = JsonSerializer.Deserialize<Measure>(message);
+                Measure measure = JsonSerializer.Deserialize<Measure>(message);
+                Console.WriteLine(measure.ToString());
 
                 if (measure != null)
                 {

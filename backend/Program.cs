@@ -11,9 +11,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<MongoDbService>();
-builder.Services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
 builder.Services.AddTransient<ISensorService, SensorService>();
 builder.Services.AddTransient<IMeasureService, MeasureService>();
+builder.Services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
 
 var app = builder.Build();
 
