@@ -14,17 +14,17 @@ namespace backend.RabbitMq
         private IModel _channel;
         private readonly IMeasureService _measureService;
 
-        public RabbitMQConsumer(IMeasureService measureService)
+        public RabbitMQConsumer(IMeasureService measureService, IConfiguration configuration)
         {
             _measureService = measureService;
-            InitializeConntection();
+            InitializeConntection(configuration.GetConnectionString("RabbitMQConnection"));
         }
 
-        private void InitializeConntection()
+        private void InitializeConntection(string connectionString)
         {
             ConnectionFactory factory = new();
 
-            factory.Uri = new Uri("amqp://guest:guest@localhost:5672");
+            factory.Uri = new Uri(connectionString);
 
             _conntection = factory.CreateConnection();
             _channel = _conntection.CreateModel();
