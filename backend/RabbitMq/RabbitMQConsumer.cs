@@ -29,7 +29,7 @@ namespace backend.RabbitMq
             _conntection = factory.CreateConnection();
             _channel = _conntection.CreateModel();
 
-            _channel.QueueDeclare("messages");
+            _channel.QueueDeclare("messages", durable: true, exclusive: false, autoDelete: false);
 
         }
 
