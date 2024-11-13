@@ -27,7 +27,9 @@ INTAKE_AIR_TEMP_TOP_LIMIT = 40
 
 TEMPERATURE_ROUNDING = 1
 
-RABBITMQ_HOST = "localhost" 
+RABBITMQ_HOST = "localhost"
+RABBITMQ_USER = "guest"
+RABBITMQ_PASSWORD = "guest"
 QUEUE_NAME = "messages"
 
 def createMessage(sensorId, value):
@@ -35,10 +37,10 @@ def createMessage(sensorId, value):
     return f"{{\"sensor_id\": \"{sensorId}\", \"value\": {value}, \"timestamp\": \"{current_time}\"}}\n"
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASSWORD)))
 channel = connection.channel()
 
-channel.queue_declare(queue=QUEUE_NAME)
+channel.queue_declare(queue=QUEUE_NAME, durable=True, exclusive=False, auto_delete=False)
 
 try:
     while True:
