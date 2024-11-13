@@ -37,4 +37,9 @@ public class SensorService : ISensorService
         _sensors.DeleteOne(filter);
         return;
     }
+
+    public IEnumerable<Sensor> findAllByType(SensorType type){
+        var filter = Builders<Sensor>.Filter.Eq(x => x.type, type);
+        return _sensors.Find(filter).ToList();
+    }
 }

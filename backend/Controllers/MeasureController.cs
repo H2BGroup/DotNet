@@ -20,9 +20,18 @@ public class MeasureController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Measure>> FindAll([FromQuery(Name ="sensor_id")]string? sensorId)
+    public async Task<IEnumerable<Measure>> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]SensorType? sensorType)
     {
-        return _measureService.FindAll(sensorId);
+        if(sensorType is not null)
+        {
+            IEnumerable<Sensor> sensors = _sensorService.findAllByType(sensorType.Value);
+            foreach(var s in sensors)
+            {
+                if(s.Id is not null)
+                    sensorIds.Add(s.Id);
+            }
+        }
+        return _measureService.FindAll(sensorIds);
     }
 
     [HttpGet]
