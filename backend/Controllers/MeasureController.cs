@@ -11,16 +11,18 @@ namespace backend.Controllers;
 public class MeasureController : ControllerBase
 {
     private readonly IMeasureService _measureService;
+    private readonly ISensorService _sensorService;
 
-    public MeasureController(IMeasureService measureService)
+    public MeasureController(IMeasureService measureService, ISensorService sensorService)
     {
         _measureService = measureService;
+        _sensorService = sensorService;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Measure>> FindAll()
+    public async Task<IEnumerable<Measure>> FindAll([FromQuery(Name ="sensor_id")]string? sensorId)
     {
-        return _measureService.FindAll();
+        return _measureService.FindAll(sensorId);
     }
 
     [HttpGet]

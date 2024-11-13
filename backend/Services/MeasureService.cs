@@ -13,9 +13,14 @@ public class MeasureService : IMeasureService
         _measures = mongoDbService.Database?.GetCollection<Measure>("measures");
     }
 
-    public IEnumerable<Measure> FindAll()
+    public IEnumerable<Measure> FindAll(string? sensorId)
     {
-        return _measures.Find(FilterDefinition<Measure>.Empty).ToList();
+        var filter = Builders<Measure>.Filter.Empty;
+        if(sensorId is not null)
+        {
+            filter = filter & Builders<Measure>.Filter.Eq(x => x.sensor_id, sensorId);
+        }
+        return _measures.Find(filter).ToList();
     }
 
     public Measure? FindOne(string id)
