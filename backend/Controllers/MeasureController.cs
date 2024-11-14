@@ -20,7 +20,7 @@ public class MeasureController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Measure>> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]SensorType? sensorType)
+    public IEnumerable<Measure> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]SensorType? sensorType)
     {
         if(sensorType is not null)
         {
@@ -36,14 +36,14 @@ public class MeasureController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
-    public async Task<ActionResult<Measure?>> FindOne(string id)
+    public ActionResult<Measure?> FindOne(string id)
     {
         var measure = _measureService.FindOne(id);
         return measure is not null ? Ok(measure) : NotFound();
     }
 
     [HttpPut]
-    public async Task<ActionResult> Create(Measure measure)
+    public ActionResult Create(Measure measure)
     {
         _measureService.Create(measure);
         return CreatedAtAction(nameof(FindOne), new {id = measure.Id}, measure);

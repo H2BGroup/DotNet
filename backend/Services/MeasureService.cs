@@ -32,14 +32,20 @@ public class MeasureService : IMeasureService
 
     public void Create(Measure measure)
     {
-        _measures.InsertOne(measure);
+        if(_measures is not null)
+        {
+            _measures.InsertOne(measure);
+        }
         return;
     }
 
     public void Delete(string id)
     {
         var filter = Builders<Measure>.Filter.Eq(x => x.Id, id);
-        _measures.DeleteOne(filter);
+        if(_measures is not null)
+        {
+            _measures.DeleteOne(filter);
+        }
         return;
     }
 }

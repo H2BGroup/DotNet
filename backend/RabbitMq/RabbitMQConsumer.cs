@@ -10,14 +10,16 @@ namespace backend.RabbitMq
 {
     public class RabbitMQConsumer:IRabbitMQConsumer
     {
-        private IConnection _conntection;
-        private IModel _channel;
+        private IConnection? _conntection;
+        private IModel? _channel;
         private readonly IMeasureService _measureService;
 
         public RabbitMQConsumer(IMeasureService measureService, IConfiguration configuration)
         {
             _measureService = measureService;
-            InitializeConntection(configuration.GetConnectionString("RabbitMQConnection"));
+            string? connectionString = configuration.GetConnectionString("RabbitMQConnection");
+            if(connectionString is not null)
+                InitializeConntection(connectionString);
         }
 
         private void InitializeConntection(string connectionString)
@@ -42,11 +44,11 @@ namespace backend.RabbitMq
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine($" [x] Received {message}");
 
-                Measure measure = JsonSerializer.Deserialize<Measure>(message);
-                Console.WriteLine(measure.ToString());
+                Measure? measure = JsonSerializer.Deserialize<Measure>(message);
 
                 if (measure != null)
                 {
+                    Console.WriteLine(measure.ToString());
                     _measureService.Create(measure);
                 }
             };
