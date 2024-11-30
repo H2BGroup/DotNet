@@ -13,9 +13,14 @@ public class MeasureService : IMeasureService
         _measures = mongoDbService.Database?.GetCollection<Measure>("measures");
     }
 
-    public IEnumerable<Measure> FindAll()
+    public IEnumerable<Measure> FindAll(List<string> sensorIds)
     {
-        return _measures.Find(FilterDefinition<Measure>.Empty).ToList();
+        var filter = Builders<Measure>.Filter.Empty;
+        if(sensorIds.Count > 0)
+        {
+            filter = filter & Builders<Measure>.Filter.In(x => x.sensor_id, sensorIds);
+        }
+        return _measures.Find(filter).ToList();
     }
 
     public Measure? FindOne(string id)
@@ -27,14 +32,20 @@ public class MeasureService : IMeasureService
 
     public void Create(Measure measure)
     {
-        _measures.InsertOne(measure);
+        if(_measures is not null)
+        {
+            _measures.InsertOne(measure);
+        }
         return;
     }
 
     public void Delete(string id)
     {
         var filter = Builders<Measure>.Filter.Eq(x => x.Id, id);
-        _measures.DeleteOne(filter);
+        if(_measures is not null)
+        {
+            _measures.DeleteOne(filter);
+        }
         return;
     }
 }
