@@ -20,11 +20,11 @@ public class MeasureController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Measure> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]SensorType? sensorType)
+    public IEnumerable<Measure> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]List<SensorType> sensorTypes)
     {
-        if(sensorType is not null)
+        foreach(var sensorType in sensorTypes)
         {
-            IEnumerable<Sensor> sensors = _sensorService.findAllByType(sensorType.Value);
+            IEnumerable<Sensor> sensors = _sensorService.findAllByType(sensorType);
             foreach(var s in sensors)
             {
                 if(s.Id is not null)
