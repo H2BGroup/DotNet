@@ -27,14 +27,25 @@ public class SensorService : ISensorService
 
     public void Create(Sensor sensor)
     {
-        _sensors.InsertOne(sensor);
+        if(_sensors is not null)
+        {
+            _sensors.InsertOne(sensor);
+        }
         return;
     }
 
     public void Delete(string id)
     {
         var filter = Builders<Sensor>.Filter.Eq(x => x.Id, id);
-        _sensors.DeleteOne(filter);
+        if(_sensors is not null)
+        {
+            _sensors.DeleteOne(filter);
+        }
         return;
+    }
+
+    public IEnumerable<Sensor> findAllByType(SensorType type){
+        var filter = Builders<Sensor>.Filter.Eq(x => x.type, type);
+        return _sensors.Find(filter).ToList();
     }
 }
