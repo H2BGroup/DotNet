@@ -20,7 +20,7 @@ public class MeasureController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Measure> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]List<SensorType> sensorTypes)
+    public IEnumerable<Measure> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]List<SensorType> sensorTypes, [FromQuery(Name = "start_date")] DateTime? startDate, [FromQuery(Name = "end_date")] DateTime? endDate)
     {
         foreach(var sensorType in sensorTypes)
         {
@@ -31,7 +31,7 @@ public class MeasureController : ControllerBase
                     sensorIds.Add(s.Id);
             }
         }
-        return _measureService.FindAll(sensorIds);
+        return _measureService.FindAll(sensorIds, startDate, endDate);
     }
 
     [HttpGet]
