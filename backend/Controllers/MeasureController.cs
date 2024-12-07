@@ -22,18 +22,24 @@ public class MeasureController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Measure> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]List<SensorType> sensorTypes, [FromQuery(Name = "start_date")] DateTime? startDate, [FromQuery(Name = "end_date")] DateTime? endDate)
+    public IEnumerable<Measure> FindAll(
+        [FromQuery(Name = "sensor_id")] List<string> sensorIds,
+        [FromQuery(Name = "sensor_type")] List<SensorType> sensorTypes,
+        [FromQuery(Name = "start_date")] DateTime? startDate,
+        [FromQuery(Name = "end_date")] DateTime? endDate,
+        [FromQuery(Name = "sort_field")] string? sortField,
+        [FromQuery(Name = "sort_order")] string? sortOrder)
     {
-        foreach(var sensorType in sensorTypes)
+        foreach (var sensorType in sensorTypes)
         {
             IEnumerable<Sensor> sensors = _sensorService.findAllByType(sensorType);
-            foreach(var s in sensors)
+            foreach (var s in sensors)
             {
-                if(s.Id is not null)
+                if (s.Id is not null)
                     sensorIds.Add(s.Id);
             }
         }
-        return _measureService.FindAll(sensorIds, startDate, endDate);
+        return _measureService.FindAll(sensorIds, startDate, endDate, sortField, sortOrder);
     }
 
     [HttpGet]
@@ -48,11 +54,18 @@ public class MeasureController : ControllerBase
     public ActionResult Create(Measure measure)
     {
         _measureService.Create(measure);
-        return CreatedAtAction(nameof(FindOne), new {id = measure.Id}, measure);
+        return CreatedAtAction(nameof(FindOne), new { id = measure.Id }, measure);
     }
 
     [HttpGet("export")]
-    public IActionResult ExportToFile([FromQuery(Name = "sensor_id")] List<string> sensorIds, [FromQuery(Name = "sensor_type")] List<SensorType> sensorTypes, [FromQuery(Name = "start_date")] DateTime? startDate, [FromQuery(Name = "end_date")] DateTime? endDate, string fileType)
+    public IActionResult ExportToFile(
+        [FromQuery(Name = "sensor_id")] List<string> sensorIds,
+        [FromQuery(Name = "sensor_type")] List<SensorType> sensorTypes,
+        [FromQuery(Name = "start_date")] DateTime? startDate,
+        [FromQuery(Name = "end_date")] DateTime? endDate,
+        [FromQuery(Name = "sort_field")] string? sortField,
+        [FromQuery(Name = "sort_order")] string? sortOrder,
+        string fileType)
     {
         foreach (var sensorType in sensorTypes)
         {
@@ -63,9 +76,9 @@ public class MeasureController : ControllerBase
                     sensorIds.Add(s.Id);
             }
         }
-        var measures = _measureService.FindAll(sensorIds, startDate, endDate);
+        var measures = _measureService.FindAll(sensorIds, startDate, endDate, sortField, sortOrder);
 
-        if(fileType == "CSV")
+        if (fileType == "CSV")
         {
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Id,SensorId,Value,Timestamp");
@@ -81,7 +94,7 @@ public class MeasureController : ControllerBase
 
             return File(bytes, "text/csv", fileName);
         }
-        else if(fileType == "JSON")
+        else if (fileType == "JSON")
         {
             var jsonOptions = new JsonSerializerOptions
             {
