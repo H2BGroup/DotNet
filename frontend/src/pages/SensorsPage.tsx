@@ -3,9 +3,11 @@ import SensorsTable from '../components/SensorsTable'
 
 const SensorsPage = () => {
   return (
-    <div className='p-6 bg-background-500 min-h-screen text-text'>
-      <h1 className='text-3xl font-bold text-primary mb-6'>Sensors</h1>
-      <SensorsTable />
+    <div className='p-6 bg-gray-100 min-h-screen text-gray-800'>
+      <h1 className='text-3xl font-bold text-info mb-6'>Sensors</h1>
+      <div className='mx-auto'>
+        <SensorsTable />
+      </div>
     </div>
   )
 }

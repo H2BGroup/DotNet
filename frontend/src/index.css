@@ -10,7 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @apply bg-background-500 text-text;
+  @apply bg-background-300 text-text;
 }
 
 code {

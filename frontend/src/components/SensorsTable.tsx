@@ -24,33 +24,28 @@ const SensorsTable = () => {
   })
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div className='flex justify-center items-center h-64'>
+        <span className='text-lg text-gray-600'>Loading...</span>
+      </div>
+    )
   }
 
   return (
-    <TableContainer className=' rounded-lg shadow-lg border border-background-500'>
+    <TableContainer className='rounded-lg shadow-lg border border-gray-200 bg-white'>
       <Table aria-label='customized table' className='w-full text-sm text-left'>
-        <TableHead className='bg-background-800 text-text'>
-          <TableRow className='!text-text'>
-            <TableCell className='px-6 py-4 font-semibold !text-text'>
+        <TableHead className='bg-gray-100'>
+          <TableRow>
+            <TableCell className='font-bold text-gray-700'>
               Sensor Name
             </TableCell>
-            <TableCell
-              className='px-6 py-4 font-semibold !text-text'
-              align='right'
-            >
+            <TableCell align='right' className='font-bold text-gray-700'>
               ID
             </TableCell>
-            <TableCell
-              className='px-6 py-4 font-semibold !text-text'
-              align='right'
-            >
+            <TableCell align='right' className='font-bold text-gray-700'>
               Type
             </TableCell>
-            <TableCell
-              className='px-6 py-4 font-semibold !text-text'
-              align='right'
-            >
+            <TableCell align='right' className='font-bold text-gray-700'>
               Unit
             </TableCell>
           </TableRow>
@@ -59,18 +54,18 @@ const SensorsTable = () => {
           {sensors?.map((sensor) => (
             <TableRow
               key={sensor.id}
-              className='odd:bg-background-500 even:bg-background-600 hover:bg-background-400 transition-colors'
+              className='hover:bg-gray-50 transition duration-150'
             >
-              <TableCell className='px-6 py-4 !text-text'>
+              <TableCell className='py-3 px-4 text-gray-600'>
                 {sensor.name}
               </TableCell>
-              <TableCell className='px-6 py-4 !text-text' align='right'>
+              <TableCell align='right' className='py-3 px-4 text-gray-600'>
                 {sensor.id}
               </TableCell>
-              <TableCell className='px-6 py-4 !text-text' align='right'>
+              <TableCell align='right' className='py-3 px-4 text-gray-600'>
                 {sensor.type}
               </TableCell>
-              <TableCell className='px-6 py-4 !text-text' align='right'>
+              <TableCell align='right' className='py-3 px-4 text-gray-600'>
                 {sensor.unit}
               </TableCell>
             </TableRow>
