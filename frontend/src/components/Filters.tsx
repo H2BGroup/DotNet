@@ -4,6 +4,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers-pro/LocalizationProvid
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs'
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import SearchIcon from '@mui/icons-material/Search'
+import ClearIcon from '@mui/icons-material/Clear'
 import MenuItem from '@mui/material/MenuItem'
 import {
   Box,
@@ -14,7 +16,12 @@ import {
 } from '@mui/material'
 import { Dayjs } from 'dayjs'
 
-const sensorTypes = ['THERMOMETER', 'BAROMETER', 'POTENTIOMETER', 'PARKING']
+const sensorTypes = [
+  { label: 'THERMOMETER', value: 0 },
+  { label: 'BAROMETER', value: 1 },
+  { label: 'POTENTIOMETER', value: 2 },
+  { label: 'PARKING', value: 3 },
+]
 const sensorIds = [
   't1',
   't2',
@@ -34,17 +41,28 @@ const sensorIds = [
   'd4',
 ]
 
-const Filters: React.FC = () => {
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([])
+interface FiltersProps {
+  onChange: (filters: {
+    sensor_id?: string[]
+    sensor_type?: number[]
+    start_date?: string
+    end_date?: string
+  }) => void
+}
+
+const Filters = ({ onChange }: FiltersProps) => {
+  const [selectedTypes, setSelectedTypes] = useState<number[]>([])
   const [selectedSensorId, setSelectedSensorId] = useState<string[]>([])
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
     null,
   ])
 
-  const handleTypeChange = (event: SelectChangeEvent<typeof selectedTypes>) => {
+  const handleTypeChange = (event: SelectChangeEvent<number[]>) => {
     const { value } = event.target
-    setSelectedTypes(typeof value === 'string' ? value.split(',') : value)
+    const selected =
+      typeof value === 'string' ? value.split(',').map(Number) : value
+    setSelectedTypes(selected)
   }
 
   const handleSensorIdChange = (
@@ -56,13 +74,22 @@ const Filters: React.FC = () => {
 
   const handleDateRangeChange = (range: [Dayjs | null, Dayjs | null]) => {
     setDateRange(range)
-    const [start, end] = range
-    console.log(
-      'Start Date:',
-      start?.toISOString(),
-      'End Date:',
-      end?.toISOString()
-    )
+  }
+
+  const handleSearch = () => {
+    onChange({
+      sensor_id: selectedSensorId.length ? selectedSensorId : undefined,
+      sensor_type: selectedTypes.length ? selectedTypes : undefined,
+      start_date: dateRange[0]?.toISOString(),
+      end_date: dateRange[1]?.toISOString(),
+    })
+  }
+
+  const handleClear = () => {
+    setSelectedTypes([])
+    setSelectedSensorId([])
+    setDateRange([null, null])
+    onChange({})
   }
 
   return (
@@ -106,7 +133,7 @@ const Filters: React.FC = () => {
               renderValue={(selected) => (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                   {selected.map((value) => (
-                    <Chip key={value} label={value} />
+                    <Chip key={value} label={sensorTypes[value].label} />
                   ))}
                 </Box>
               )}
@@ -116,8 +143,8 @@ const Filters: React.FC = () => {
               }}
             >
               {sensorTypes.map((type) => (
-                <MenuItem key={type} value={type}>
-                  {type}
+                <MenuItem key={type.value} value={type.value}>
+                  {type.label}
                 </MenuItem>
               ))}
             </Select>
@@ -154,6 +181,23 @@ const Filters: React.FC = () => {
             </Select>
           </FormControl>
         </Box>
+      </Box>
+
+      <Box className='flex gap-4 mt-4 w-full'>
+        <button
+          onClick={handleSearch}
+          className='flex items-center justify-center w-1/2 bg-blue-600 text-white py-3 rounded-md shadow-md hover:bg-blue-700 transition-all'
+        >
+          <SearchIcon className='mr-2' />
+          Search
+        </button>
+        <button
+          onClick={handleClear}
+          className='flex items-center justify-center w-1/2 border border-gray-300 text-gray-700 py-3 rounded-md shadow-md hover:bg-gray-100 transition-all'
+        >
+          <ClearIcon className='mr-2' />
+          Clear
+        </button>
       </Box>
     </div>
   )

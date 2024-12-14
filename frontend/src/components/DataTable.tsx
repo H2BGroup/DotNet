@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { alpha } from '@mui/material/styles'
+import React, { useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -11,24 +10,14 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import Paper from '@mui/material/Paper'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import DescriptionIcon from '@mui/icons-material/Description'
 import DataObjectIcon from '@mui/icons-material/DataObject'
 import { visuallyHidden } from '@mui/utils'
-import { measurments } from './testData'
 import { saveAs } from 'file-saver'
-
-interface Data {
-  id: string
-  sensor_id: string
-  value: number
-  timestamp: string
-}
-
-const rows = [...measurments]
+import { Measure } from '../pages/DataPage'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) return -1
@@ -52,7 +41,7 @@ function getComparator<Key extends keyof any>(order: Order, orderBy: Key) {
 
 interface HeadCell {
   disablePadding: boolean
-  id: keyof Data
+  id: keyof Measure
   label: string
   numeric: boolean
 }
@@ -68,11 +57,11 @@ const headCells: readonly HeadCell[] = [
   },
 ]
 
-interface EnhancedTableProps {
+interface EnhancedTableHeadProps {
   numSelected: number
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: keyof Measure
   ) => void
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
   order: Order
@@ -80,7 +69,7 @@ interface EnhancedTableProps {
   rowCount: number
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
+function EnhancedTableHead(props: EnhancedTableHeadProps) {
   const {
     onSelectAllClick,
     order,
@@ -90,7 +79,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     onRequestSort,
   } = props
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof Measure) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property)
     }
 
@@ -145,18 +134,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
       }}
     >
       {numSelected > 0 ? (
         <Typography
-          sx={{ flex: '1 1 100%' }}
+          sx={{ flex: '1 1 100%', fontWeight: '600' }}
           color='inherit'
           variant='subtitle1'
         >
@@ -191,20 +173,47 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   )
 }
 
-export default function EnhancedTable() {
-  const [order, setOrder] = React.useState<Order>('asc')
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('sensor_id')
+const arraysAreEqual = (arr1: Measure[], arr2: Measure[]) => {
+  if (arr1.length !== arr2.length) return false
+
+  const arr1Sorted = [...arr1].sort((a, b) => a.id.localeCompare(b.id))
+  const arr2Sorted = [...arr2].sort((a, b) => a.id.localeCompare(b.id))
+
+  return arr1Sorted.every((item, index) => item.id === arr2Sorted[index].id)
+}
+
+interface EnhancedTableProps {
+  rows: Measure[]
+  order: 'asc' | 'desc'
+  orderBy: keyof Measure
+  onSortChange: (newOrder: 'asc' | 'desc', newOrderBy: keyof Measure) => void
+}
+
+export default function EnhancedTable({
+  rows,
+  order,
+  orderBy,
+  onSortChange,
+}: EnhancedTableProps) {
   const [selected, setSelected] = React.useState<readonly string[]>([])
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
 
+  const previousRows = useRef<Measure[]>([])
+  useEffect(() => {
+    if (!arraysAreEqual(previousRows.current, rows)) {
+      setSelected([])
+      setPage(0)
+      previousRows.current = rows
+    }
+  }, [rows])
+
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: keyof Measure
   ) => {
     const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
+    onSortChange(isAsc ? 'desc' : 'asc', property)
   }
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -226,13 +235,13 @@ export default function EnhancedTable() {
     saveAs(blob, `data.${format}`)
   }
 
-  const toCsv = (data: Data[]) => {
+  const toCsv = (data: Measure[]) => {
     const header = Object.keys(data[0]).join(',')
     const csv = data.map((row) => Object.values(row).join(',')).join('\n')
     return `${header}\n${csv}`
   }
 
-  const toJson = (data: Data[]) => {
+  const toJson = (data: Measure[]) => {
     return JSON.stringify(data, null, 2)
   }
 
@@ -270,16 +279,13 @@ export default function EnhancedTable() {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
   const visibleRows = React.useMemo(
-    () =>
-      [...rows]
-        .sort(getComparator(order, orderBy))
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage]
+    () => [...rows].slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [page, rowsPerPage, rows]
   )
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <div className='p-4 mb-6 bg-white rounded-lg shadow-md'>
         <EnhancedTableToolbar
           numSelected={selected.length}
           downloadData={downloadData}
@@ -351,7 +357,7 @@ export default function EnhancedTable() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
+      </div>
     </Box>
   )
 }
