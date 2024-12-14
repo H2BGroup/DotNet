@@ -237,7 +237,9 @@ export default function EnhancedTable() {
 
   const downloadData = (format: 'csv' | 'json') => {
     const selectedData = rows.filter((row) => selected.includes(row.id))
-    const data = format === 'csv' ? toCsv(selectedData) : toJson(selectedData)
+    const sortedSelectedData = selectedData.sort(getComparator(order, orderBy))
+    const data =
+      format === 'csv' ? toCsv(sortedSelectedData) : toJson(sortedSelectedData)
 
     const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
     saveAs(blob, `data.${format}`)
