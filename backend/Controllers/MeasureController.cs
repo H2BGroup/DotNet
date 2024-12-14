@@ -3,6 +3,8 @@ using backend.Entities;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Text;
+using System.Text.Json;
 
 namespace backend.Controllers;
 
@@ -20,18 +22,24 @@ public class MeasureController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Measure> FindAll([FromQuery(Name ="sensor_id")]List<string> sensorIds, [FromQuery(Name ="sensor_type")]List<SensorType> sensorTypes)
+    public IEnumerable<Measure> FindAll(
+        [FromQuery(Name = "sensor_id")] List<string> sensorIds,
+        [FromQuery(Name = "sensor_type")] List<SensorType> sensorTypes,
+        [FromQuery(Name = "start_date")] DateTime? startDate,
+        [FromQuery(Name = "end_date")] DateTime? endDate,
+        [FromQuery(Name = "sort_field")] string? sortField,
+        [FromQuery(Name = "sort_order")] string? sortOrder)
     {
-        foreach(var sensorType in sensorTypes)
+        foreach (var sensorType in sensorTypes)
         {
             IEnumerable<Sensor> sensors = _sensorService.findAllByType(sensorType);
-            foreach(var s in sensors)
+            foreach (var s in sensors)
             {
-                if(s.Id is not null)
+                if (s.Id is not null)
                     sensorIds.Add(s.Id);
             }
         }
-        return _measureService.FindAll(sensorIds);
+        return _measureService.FindAll(sensorIds, startDate, endDate, sortField, sortOrder);
     }
 
     [HttpGet]
@@ -46,6 +54,60 @@ public class MeasureController : ControllerBase
     public ActionResult Create(Measure measure)
     {
         _measureService.Create(measure);
-        return CreatedAtAction(nameof(FindOne), new {id = measure.Id}, measure);
+        return CreatedAtAction(nameof(FindOne), new { id = measure.Id }, measure);
+    }
+
+    [HttpGet("export")]
+    public IActionResult ExportToFile(
+        [FromQuery(Name = "sensor_id")] List<string> sensorIds,
+        [FromQuery(Name = "sensor_type")] List<SensorType> sensorTypes,
+        [FromQuery(Name = "start_date")] DateTime? startDate,
+        [FromQuery(Name = "end_date")] DateTime? endDate,
+        [FromQuery(Name = "sort_field")] string? sortField,
+        [FromQuery(Name = "sort_order")] string? sortOrder,
+        string fileType)
+    {
+        foreach (var sensorType in sensorTypes)
+        {
+            IEnumerable<Sensor> sensors = _sensorService.findAllByType(sensorType);
+            foreach (var s in sensors)
+            {
+                if (s.Id is not null)
+                    sensorIds.Add(s.Id);
+            }
+        }
+        var measures = _measureService.FindAll(sensorIds, startDate, endDate, sortField, sortOrder);
+
+        if (fileType == "CSV")
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Id,SensorId,Value,Timestamp");
+
+            foreach (var measure in measures)
+            {
+                stringBuilder.AppendLine($"{measure.Id},{measure.sensor_id},{measure.value},{measure.timestamp}");
+            }
+
+            var csvContent = stringBuilder.ToString();
+            var bytes = Encoding.UTF8.GetBytes(csvContent);
+            var fileName = $"measures_{DateTime.UtcNow:yyyyMMddHHmmss}.csv";
+
+            return File(bytes, "text/csv", fileName);
+        }
+        else if (fileType == "JSON")
+        {
+            var jsonOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            var jsonContent = JsonSerializer.Serialize(measures, jsonOptions);
+
+            var bytes = System.Text.Encoding.UTF8.GetBytes(jsonContent);
+            var fileName = $"measures_{DateTime.UtcNow:yyyyMMddHHmmss}.json";
+
+            return File(bytes, "application/json", fileName);
+        }
+
+        return null;
     }
 }
