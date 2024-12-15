@@ -11,19 +11,20 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddTransient<ISensorService, SensorService>();
 builder.Services.AddTransient<IMeasureService, MeasureService>();
 builder.Services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
+builder.Services.AddSingleton<IWebSocketNotifier, WebSocketNotifier>();
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(policy => {
-        policy.AllowAnyOrigin();
+        policy.SetIsOriginAllowed(_ => true);
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
+        policy.AllowCredentials();
     });
 });
-builder.Services.AddSignalR();
-builder.Services.AddSingleton<IWebSocketNotifier, WebSocketNotifier>();
 
 var app = builder.Build();
 
