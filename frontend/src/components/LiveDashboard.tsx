@@ -41,26 +41,19 @@ const LiveDashboard = () => {
       .withAutomaticReconnect()
       .build()
 
-    console.log('Connecting to SignalR Hub...')
-
-    connection
-      .start()
-      .then(() => console.log('Connected to SignalR Hub'))
-      .catch((err) => console.error('Connection failed: ', err))
+    connection.start().catch((err) => console.error('Connection failed: ', err))
 
     connection.on('ReceiveMessage', (message: Message) => {
-      console.log('Received message:', message)
-
       setSensorData((prev) => ({
         ...prev,
         [message.sensor_id]: {
           last_measure: [
-            message.last_measure, // Current
-            prev[message.sensor_id]?.last_measure[0] ?? message.last_measure, // Previous
+            message.last_measure,
+            prev[message.sensor_id]?.last_measure[0] ?? message.last_measure,
           ],
           average: [
-            message.average, // Current
-            prev[message.sensor_id]?.average[0] ?? message.average, // Previous
+            message.average,
+            prev[message.sensor_id]?.average[0] ?? message.average,
           ],
         },
       }))
@@ -83,9 +76,9 @@ const LiveDashboard = () => {
   const getFlashClass = (trend: 'up' | 'down' | 'stable'): string => {
     switch (trend) {
       case 'up':
-        return 'animate-flash-green' // Tailwind animation class for green flash
+        return 'animate-flash-green'
       case 'down':
-        return 'animate-flash-red' // Tailwind animation class for red flash
+        return 'animate-flash-red'
       default:
         return ''
     }
@@ -105,9 +98,8 @@ const LiveDashboard = () => {
       >
         {sensors.map((sensor_id) => {
           const data = sensorData[sensor_id]
-          const noData = !data // Check if there's no data for this sensor
+          const noData = !data
 
-          // Display a placeholder when no data is available
           const displayValue = (value: number | undefined) =>
             value === undefined ? '-' : value.toFixed(2)
 
@@ -122,14 +114,11 @@ const LiveDashboard = () => {
                     )
               }`}
             >
-              {/* Sensor ID as Header */}
               <div className='text-lg font-bold text-gray-800 mb-4'>
                 {sensor_id}
               </div>
 
-              {/* Data Display */}
               <div className='flex justify-around w-full mb-4'>
-                {/* Last Measure */}
                 <div className='flex flex-col items-center'>
                   <span className='text-xs text-gray-500'>Last Measure</span>
                   <div className='flex items-center'>
@@ -162,7 +151,6 @@ const LiveDashboard = () => {
                   </span>
                 </div>
 
-                {/* Average */}
                 <div className='flex flex-col items-center'>
                   <span className='text-xs text-gray-500'>Average</span>
                   <div className='flex items-center'>
