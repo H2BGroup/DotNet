@@ -8,4 +8,5 @@ public interface IMeasureService
     public Measure? FindOne(string id);
     public void Create(Measure measure);
     public void Delete(string id);
+    public double GetSensorAverage(string sensorId);
 }
