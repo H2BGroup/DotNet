@@ -18,6 +18,7 @@ import DataObjectIcon from '@mui/icons-material/DataObject'
 import { visuallyHidden } from '@mui/utils'
 import { saveAs } from 'file-saver'
 import { Measure } from '../pages/DataPage'
+import Visualization from './Visualization'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) return -1
@@ -356,6 +357,15 @@ export default function EnhancedTable({
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </div>
+      <div className='p-4 mb-6 bg-white rounded-lg shadow-md'>
+        <Visualization
+          items={
+            selected.length > 0
+              ? rows.filter((row) => selected.includes(row.id))
+              : rows
+          }
         />
       </div>
     </Box>
