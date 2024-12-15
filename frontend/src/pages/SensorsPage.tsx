@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import SensorsTable from '../components/SensorsTable'
 import { Typography } from '@mui/material'
 
 const SensorsPage = () => {
+    useEffect(() => {
+      document.title = 'Car Sensors - Sensors'
+    }, [])
   return (
     <div className='p-6 bg-gray-100 min-h-screen text-gray-800'>
       <div className='p-4 mb-6 bg-white rounded-lg shadow-md'>

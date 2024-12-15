@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const NotFoundPage = () => {
+    useEffect(() => {
+      document.title = 'Car Sensors - Not Found'
+    }, [])
   return (
-    <div>NotFoundPage</div>
+    <div>Page Not Found</div>
   )
 }
 

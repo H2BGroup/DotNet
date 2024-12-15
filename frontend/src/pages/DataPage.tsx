@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import qs from 'qs'
 import { useQuery } from 'react-query'
 import axios from 'axios'
@@ -13,6 +13,9 @@ export interface Measure {
 }
 
 const MyComponent = () => {
+    useEffect(() => {
+      document.title = 'Car Sensors - Data'
+    }, [])
   const [order, setOrder] = React.useState<'asc' | 'desc'>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Measure>('timestamp')
   const [filters, setFilters] = React.useState<{
