@@ -11,7 +11,7 @@ public class WebSocketNotifier : IWebSocketNotifier
         _hubContext = hubContext;
     }
 
-    public async Task NotifyAllAsync<T>(T message)
+    public async Task NotifyAllAsync(NotificationMessage message)
     {
         await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
     }
