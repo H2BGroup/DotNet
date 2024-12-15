@@ -19,7 +19,9 @@ interface Sensor {
 
 const SensorsTable = () => {
   const { data: sensors, isLoading } = useQuery('sensors', async () => {
-    const response = await axios.get('http://localhost:5029/api/Sensor')
+    const response = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}/api/Sensor`
+    )
     return response.data as Sensor[]
   })
 

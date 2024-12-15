@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Title from '../components/Title'
 
 const HomePage = () => {
+  useEffect(() => {
+    document.title = 'Car Sensors - Home'
+  }, [])
   return (
     <div>
       <Title
