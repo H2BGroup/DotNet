@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { LocalizationProvider } from '@mui/x-date-pickers-pro/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs'
-import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
@@ -15,6 +14,7 @@ import {
   OutlinedInput,
 } from '@mui/material'
 import { Dayjs } from 'dayjs'
+import { DateTimeRangePicker } from '@mui/x-date-pickers-pro'
 
 const sensorTypes = [
   { label: 'THERMOMETER', value: 0 },
@@ -109,8 +109,8 @@ const Filters = ({ onChange }: FiltersProps) => {
             Date Range
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DateRangePicker']}>
-              <DateRangePicker
+            <DemoContainer components={['DateTimeRangePicker']}>
+              <DateTimeRangePicker
                 localeText={{ start: 'Start Date', end: 'End Date' }}
                 onChange={handleDateRangeChange}
                 value={dateRange}
