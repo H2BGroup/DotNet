@@ -77,11 +77,13 @@ const Filters = ({ onChange }: FiltersProps) => {
   }
 
   const handleSearch = () => {
+    const start_date = dateRange[0]?.format('YYYY-MM-DDTHH:mm:ss[Z]')
+    const end_date = dateRange[1]?.format('YYYY-MM-DDTHH:mm:ss[Z]')
     onChange({
       sensor_id: selectedSensorId.length ? selectedSensorId : undefined,
       sensor_type: selectedTypes.length ? selectedTypes : undefined,
-      start_date: dateRange[0]?.toISOString(),
-      end_date: dateRange[1]?.toISOString(),
+      start_date,
+      end_date,
     })
   }
 

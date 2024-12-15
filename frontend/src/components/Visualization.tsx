@@ -122,11 +122,11 @@ const Visualization = ({ items }: VisualizationProps) => {
                   x={0}
                   y={0}
                   dy={16}
-                  textAnchor='end'
+                  textAnchor='middle'
                   fill='#666'
                   className='text-xs'
                 >
-                  {new Date(payload.value).toLocaleString()}
+                  {payload.value.replace('T', ' ').replace('Z', '')}
                 </text>
               </g>
             )}

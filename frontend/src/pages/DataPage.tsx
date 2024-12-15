@@ -13,9 +13,9 @@ export interface Measure {
 }
 
 const MyComponent = () => {
-    useEffect(() => {
-      document.title = 'Car Sensors - Data'
-    }, [])
+  useEffect(() => {
+    document.title = 'Car Sensors - Data'
+  }, [])
   const [order, setOrder] = React.useState<'asc' | 'desc'>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Measure>('timestamp')
   const [filters, setFilters] = React.useState<{
@@ -32,20 +32,22 @@ const MyComponent = () => {
   } = useQuery(
     ['sensors', order, orderBy, filters],
     async () => {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/Measure`, {
-        params: {
-          sort_order: order,
-          sort_field: orderBy,
-          start_date: filters.start_date,
-          end_date: filters.end_date,
-          sensor_id: filters.sensor_id,
-          sensor_type: filters.sensor_type,
-        },
-        paramsSerializer: (params) => {
-          return qs.stringify(params, { arrayFormat: 'repeat' })
-        },
-      })
-      console.log(response.data)
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/Measure`,
+        {
+          params: {
+            sort_order: order,
+            sort_field: orderBy,
+            start_date: filters.start_date,
+            end_date: filters.end_date,
+            sensor_id: filters.sensor_id,
+            sensor_type: filters.sensor_type,
+          },
+          paramsSerializer: (params) => {
+            return qs.stringify(params, { arrayFormat: 'repeat' })
+          },
+        }
+      )
       return response.data as Measure[]
     },
     {
