@@ -29,7 +29,7 @@ const MyComponent = () => {
   } = useQuery(
     ['sensors', order, orderBy, filters],
     async () => {
-      const response = await axios.get('http://localhost:5029/api/Measure', {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/Measure`, {
         params: {
           sort_order: order,
           sort_field: orderBy,
