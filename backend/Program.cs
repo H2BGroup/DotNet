@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.RabbitMq;
 using backend.Services;
+using backend.WebSocket;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddCors(options => {
         policy.AllowAnyMethod();
     });
 });
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IWebSocketNotifier, WebSocketNotifier>();
 
 var app = builder.Build();
 
@@ -40,5 +43,7 @@ app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<NotificationHub>("/notifications");
 
 app.Run();

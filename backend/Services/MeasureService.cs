@@ -74,4 +74,13 @@ public class MeasureService : IMeasureService
         }
         return;
     }
+
+    public double GetSensorAverage(string sensorId)
+    {
+        var filter = Builders<Measure>.Filter.Eq(x => x.sensor_id, sensorId);
+        var sort = Builders<Measure>.Sort.Descending("timestamp");
+        var measures = _measures.Find(filter).Sort(sort).Limit(100).ToList();
+
+        return measures.Select(m => m.value.Value).Average();
+    }
 }

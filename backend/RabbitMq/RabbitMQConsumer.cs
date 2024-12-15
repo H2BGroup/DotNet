@@ -1,5 +1,7 @@
 ﻿using backend.Entities;
 using backend.Services;
+using backend.WebSocket;
+using MongoDB.Bson;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -13,13 +15,15 @@ namespace backend.RabbitMq
         private IConnection? _conntection;
         private IModel? _channel;
         private readonly IMeasureService _measureService;
+        private readonly IWebSocketNotifier _notifier;
 
-        public RabbitMQConsumer(IMeasureService measureService, IConfiguration configuration)
+        public RabbitMQConsumer(IMeasureService measureService, IConfiguration configuration, IWebSocketNotifier notifier)
         {
             _measureService = measureService;
             string? connectionString = configuration.GetConnectionString("RabbitMQConnection");
             if(connectionString is not null)
                 InitializeConntection(connectionString);
+            _notifier = notifier;
         }
 
         private void InitializeConntection(string connectionString)
@@ -38,7 +42,7 @@ namespace backend.RabbitMq
         public void ConsumeMessage()
         {
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (model, ea) =>
+            consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
@@ -50,6 +54,15 @@ namespace backend.RabbitMq
                 {
                     Console.WriteLine(measure.ToString());
                     _measureService.Create(measure);
+                    if(measure.sensor_id != null && measure.value != null){
+                        var notification = new NotificationMessage{
+                            sensor_id = measure.sensor_id,
+                            last_measure = measure.value.Value,
+                            average = _measureService.GetSensorAverage(measure.sensor_id)
+                        };
+                        Console.WriteLine(notification.ToJson());
+                        await _notifier.NotifyAllAsync(notification);
+                    }
                 }
             };
 
