@@ -40,8 +40,9 @@ const Visualization = ({ items }: VisualizationProps) => {
     new Set(items.map((item) => item.sensor_id))
   ).sort()
 
-  const [selectedSensorsIds, setSelectedSensorsIds] =
-    useState<string[]>(uniqueSensorIds)
+  const [selectedSensorsIds, setSelectedSensorsIds] = useState<string[]>(
+    uniqueSensorIds[0] ? [uniqueSensorIds[0]] : []
+  )
 
   const handleSensorToggle = (sensorId: string) => {
     setSelectedSensorsIds((prevSelected) => {
