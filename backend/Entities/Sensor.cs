@@ -19,4 +19,5 @@ public class Sensor
     public SensorType? type {get; set;}
     public string? name {get; set;}
     public string? unit {get; set;}
+    public string? wallet { get; set;}
 }
