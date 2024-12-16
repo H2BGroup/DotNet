@@ -75,7 +75,14 @@ const SensorsTable = () => {
                 {sensor.unit}
               </TableCell>
               <TableCell align='right' className='py-3 px-4 text-gray-600'>
-                {sensor.walllet}
+                <a
+                  href={`https://holesky.etherscan.io/token/0x176f2e1bf4a72149cb43d7edd2140a77725aca9d?a=${sensor.walllet}`}
+                  target='_blank'
+                  rel='noreferrer'
+                  className='text-blue-500'
+                >
+                  {sensor.walllet}
+                </a>
               </TableCell>
             </TableRow>
           ))}
