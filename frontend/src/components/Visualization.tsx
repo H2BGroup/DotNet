@@ -40,8 +40,9 @@ const Visualization = ({ items }: VisualizationProps) => {
     new Set(items.map((item) => item.sensor_id))
   ).sort()
 
-  const [selectedSensorsIds, setSelectedSensorsIds] =
-    useState<string[]>(uniqueSensorIds)
+  const [selectedSensorsIds, setSelectedSensorsIds] = useState<string[]>(
+    uniqueSensorIds[0] ? [uniqueSensorIds[0]] : []
+  )
 
   const handleSensorToggle = (sensorId: string) => {
     setSelectedSensorsIds((prevSelected) => {
@@ -70,14 +71,32 @@ const Visualization = ({ items }: VisualizationProps) => {
     selectedSensorsIds.forEach((sensorId, index) => {
       const sensorData = filteredItems[index]
       const sensorItem = sensorData.find((item) => item.timestamp === timestamp)
-      if (sensorItem) {
-        row[sensorId] = sensorItem.value
-      } else {
-        row[sensorId] = null
-      }
+      row[sensorId] = sensorItem ? sensorItem.value : null
     })
     return row
   })
+
+  const getMinMax = () => {
+    let min = Infinity
+    let max = -Infinity
+
+    selectedSensorsIds.forEach((sensorId, index) => {
+      filteredItems[index].forEach((item) => {
+        if (item.value !== null) {
+          min = Math.min(min, item.value)
+          max = Math.max(max, item.value)
+        }
+      })
+    })
+
+    return { min, max }
+  }
+
+  const { min, max } = getMinMax()
+
+  const paddingPercentage = 0.05
+  const range = max - min
+  const padding = range * paddingPercentage
 
   return (
     <div>
@@ -106,7 +125,7 @@ const Visualization = ({ items }: VisualizationProps) => {
               selectedSensorsIds.includes(sensorId)
                 ? 'bg-blue-600 text-white border-blue-600'
                 : 'bg-transparent text-blue-600 border-blue-600'
-            } border rounded-full px-4 py-1 text-sm font-medium cursor-pointer transition-all duration-300 ease-in-out hover:scale-110  shadow-md hover:shadow-lg`}
+            } border rounded-full px-4 py-1 text-sm font-medium cursor-pointer transition-all duration-300 ease-in-out hover:scale-110 shadow-md hover:shadow-lg`}
           />
         ))}
       </Box>
@@ -122,16 +141,19 @@ const Visualization = ({ items }: VisualizationProps) => {
                   x={0}
                   y={0}
                   dy={16}
-                  textAnchor='end'
+                  textAnchor='middle'
                   fill='#666'
                   className='text-xs'
                 >
-                  {new Date(payload.value).toLocaleString()}
+                  {payload.value.replace('T', ' ').replace('Z', '')}
                 </text>
               </g>
             )}
           />
-          <YAxis />
+          <YAxis
+            domain={[min - padding, max + padding]}
+            tickFormatter={(value) => value.toFixed(2)}
+          />
           <Tooltip />
           <Legend />
           {selectedSensorsIds.map((sensorId, index) => (
@@ -142,6 +164,7 @@ const Visualization = ({ items }: VisualizationProps) => {
               name={sensorId}
               stroke={strokeColors[index % strokeColors.length]}
               activeDot={{ r: 8 }}
+              connectNulls={true}
             />
           ))}
         </LineChart>

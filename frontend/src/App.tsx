@@ -9,7 +9,7 @@ import DataPage from './pages/DataPage'
 const queryClient = new QueryClient()
 
 const navigationLinks = [
-  { href: '/', label: 'Home' },
+  { href: '/', label: 'Live Dashboard' },
   { href: '/data', label: 'Gathered data' },
   { href: '/sensors', label: 'Sensors' },
 ]
