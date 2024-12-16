@@ -27,6 +27,8 @@ module.exports = {
       animation: {
         'flash-green': 'flash-green 0.65s',
         'flash-red': 'flash-red 0.65s',
+        pulse: 'pulse 1s infinite', // Pulse animation for green dot
+        blink: 'blink 1s infinite', // Blink animation for red dot
       },
       keyframes: {
         'flash-green': {
@@ -80,6 +82,16 @@ module.exports = {
             borderColor: '#d1d5db', // Returning to the initial gray
             boxShadow: '0 0 10px #d1d5db', // Soft initial shadow
           },
+        },
+        pulse: {
+          '0%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.2)', opacity: '0.7' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        blink: {
+          '0%': { opacity: '1' },
+          '50%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
       },
     },
