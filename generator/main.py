@@ -55,7 +55,7 @@ def gradual_value_generator(initial_value, min_limit, max_limit, step_size=1.0):
         yield round(value, TEMPERATURE_ROUNDING if isinstance(value, float) else 0)
 
 
-def send_sensor_data(sensor_id, value_generator, delay_range=(2, 5)):
+def send_sensor_data(sensor_id, value_generator, delay_range=(10, 20)):
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASSWORD))
     )
