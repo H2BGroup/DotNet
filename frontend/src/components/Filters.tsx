@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
-import { LocalizationProvider } from '@mui/x-date-pickers-pro/LocalizationProvider'
-import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs'
+import { FaMinus } from 'react-icons/fa'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
@@ -14,7 +14,7 @@ import {
   OutlinedInput,
 } from '@mui/material'
 import { Dayjs } from 'dayjs'
-import { DateTimeRangePicker } from '@mui/x-date-pickers-pro'
+import { DateTimePicker } from '@mui/x-date-pickers'
 
 const sensorTypes = [
   { label: 'THERMOMETER', value: 0 },
@@ -56,10 +56,8 @@ interface FiltersProps {
 const Filters = ({ onChange }: FiltersProps) => {
   const [selectedTypes, setSelectedTypes] = useState<number[]>([])
   const [selectedSensorId, setSelectedSensorId] = useState<string[]>([])
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
-    null,
-    null,
-  ])
+  const [startDate, setStartDate] = useState<Dayjs | null>(null)
+  const [endDate, setEndDate] = useState<Dayjs | null>(null)
 
   const handleTypeChange = (event: SelectChangeEvent<number[]>) => {
     const { value } = event.target
@@ -75,13 +73,9 @@ const Filters = ({ onChange }: FiltersProps) => {
     setSelectedSensorId(typeof value === 'string' ? value.split(',') : value)
   }
 
-  const handleDateRangeChange = (range: [Dayjs | null, Dayjs | null]) => {
-    setDateRange(range)
-  }
-
   const handleSearch = () => {
-    const start_date = dateRange[0]?.format('YYYY-MM-DDTHH:mm:ss[Z]')
-    const end_date = dateRange[1]?.format('YYYY-MM-DDTHH:mm:ss[Z]')
+    const start_date = startDate?.format('YYYY-MM-DDTHH:mm:ss[Z]')
+    const end_date = endDate?.format('YYYY-MM-DDTHH:mm:ss[Z]')
     onChange({
       sensor_id: selectedSensorId.length ? selectedSensorId : undefined,
       sensor_type: selectedTypes.length ? selectedTypes : undefined,
@@ -93,7 +87,8 @@ const Filters = ({ onChange }: FiltersProps) => {
   const handleClear = () => {
     setSelectedTypes([])
     setSelectedSensorId([])
-    setDateRange([null, null])
+    setStartDate(null)
+    setEndDate(null)
     onChange({}, 'clear')
   }
 
@@ -109,21 +104,30 @@ const Filters = ({ onChange }: FiltersProps) => {
           alignItems: 'flex-start',
         }}
       >
-        <Box className='w-full' sx={{ minWidth: 300 }}>
-          <Typography variant='subtitle2' className='mb-1 text-gray-600'>
-            Date Range
-          </Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DateTimeRangePicker']}>
-              <DateTimeRangePicker
-                localeText={{ start: 'Start Date', end: 'End Date' }}
-                onChange={handleDateRangeChange}
-                value={dateRange}
-                sx={{ width: '100%' }}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-        </Box>
+        <div className='flex flex-wrap gap-6 flex-col items-start w-full'>
+          <div className='w-full min-w-[300px]'>
+            <Typography variant='subtitle2' className='mb-1 text-gray-600'>
+              Date Range
+            </Typography>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <div className='flex flex-col md:flex-row items-center gap-4 pt-1'>
+                <DateTimePicker
+                  label='Start Date'
+                  value={startDate}
+                  onChange={(newValue) => setStartDate(newValue)}
+                  className='w-full md:w-1/2'
+                />
+                <FaMinus className='text-gray-500 text-sm hidden md:block' />
+                <DateTimePicker
+                  label='End Date'
+                  value={endDate}
+                  onChange={(newValue) => setEndDate(newValue)}
+                  className='w-full md:w-1/2'
+                />
+              </div>
+            </LocalizationProvider>
+          </div>
+        </div>
 
         <Box className='w-full' sx={{ minWidth: 200 }}>
           <Typography variant='subtitle2' className='mb-1 text-gray-600'>

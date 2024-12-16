@@ -92,9 +92,6 @@ const MyComponent = () => {
     setOrderBy(newOrderBy)
   }
 
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error fetching data from API</div>
-
   return (
     <div className='p-6 min-h-screen text-text'>
       <Filters onChange={handleFilterChange} />
