@@ -42,12 +42,15 @@ const sensorIds = [
 ]
 
 interface FiltersProps {
-  onChange: (filters: {
-    sensor_id?: string[]
-    sensor_type?: number[]
-    start_date?: string
-    end_date?: string
-  }) => void
+  onChange: (
+    filters: {
+      sensor_id?: string[]
+      sensor_type?: number[]
+      start_date?: string
+      end_date?: string
+    },
+    action?: 'search' | 'clear'
+  ) => void
 }
 
 const Filters = ({ onChange }: FiltersProps) => {
@@ -91,7 +94,7 @@ const Filters = ({ onChange }: FiltersProps) => {
     setSelectedTypes([])
     setSelectedSensorId([])
     setDateRange([null, null])
-    onChange({})
+    onChange({}, 'clear')
   }
 
   return (

@@ -29,6 +29,7 @@ const MyComponent = () => {
     data: sensors,
     isLoading,
     isError,
+    refetch,
   } = useQuery(
     ['sensors', order, orderBy, filters],
     async () => {
@@ -53,19 +54,34 @@ const MyComponent = () => {
     {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
+      enabled: !!filters,
     }
   )
 
+  const handleRefetch = useCallback(() => {
+    refetch()
+  }, [refetch])
+
   const handleFilterChange = useCallback(
-    (newFilters: {
-      sensor_id?: string[]
-      sensor_type?: number[]
-      start_date?: string
-      end_date?: string
-    }) => {
+    (
+      newFilters: {
+        sensor_id?: string[]
+        sensor_type?: number[]
+        start_date?: string
+        end_date?: string
+      },
+      action: 'search' | 'clear' = 'search'
+    ) => {
       setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }))
+      if (
+        action === 'search' &&
+        JSON.stringify(filters) === JSON.stringify(newFilters)
+      ) {
+        console.log('triggering refetch')
+        handleRefetch()
+      }
     },
-    []
+    [setFilters, handleRefetch, filters]
   )
 
   const handleSortChange = (
