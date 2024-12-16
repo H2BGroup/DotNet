@@ -25,12 +25,7 @@ const MyComponent = () => {
     end_date?: string
   }>({})
 
-  const {
-    data: sensors,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery(
+  const { data: sensors, refetch } = useQuery(
     ['sensors', order, orderBy, filters],
     async () => {
       const response = await axios.get(
