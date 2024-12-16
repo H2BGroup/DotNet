@@ -1,3 +1,4 @@
+using backend.blockchain;
 using backend.Data;
 using backend.RabbitMq;
 using backend.Services;
@@ -17,6 +18,7 @@ builder.Services.AddTransient<ISensorService, SensorService>();
 builder.Services.AddTransient<IMeasureService, MeasureService>();
 builder.Services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
 builder.Services.AddSingleton<IWebSocketNotifier, WebSocketNotifier>();
+builder.Services.AddSingleton<IBlockchainService, BlockchainService>();
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(policy => {
         policy.SetIsOriginAllowed(_ => true);
