@@ -15,7 +15,7 @@ interface Sensor {
   type: SensorType
   name: string
   unit: string
-  walllet: string
+  wallet: string
 }
 
 const SensorsTable = () => {
@@ -76,12 +76,12 @@ const SensorsTable = () => {
               </TableCell>
               <TableCell align='right' className='py-3 px-4 text-gray-600'>
                 <a
-                  href={`https://holesky.etherscan.io/token/0x176f2e1bf4a72149cb43d7edd2140a77725aca9d?a=${sensor.walllet}`}
+                  href={`https://holesky.etherscan.io/token/0x176f2e1bf4a72149cb43d7edd2140a77725aca9d?a=${sensor.wallet}`}
                   target='_blank'
                   rel='noreferrer'
                   className='text-blue-500'
                 >
-                  {sensor.walllet}
+                  {sensor.wallet}
                 </a>
               </TableCell>
             </TableRow>
