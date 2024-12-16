@@ -15,6 +15,7 @@ interface Sensor {
   type: SensorType
   name: string
   unit: string
+  walllet: string
 }
 
 const SensorsTable = () => {
@@ -50,6 +51,9 @@ const SensorsTable = () => {
             <TableCell align='right' className='font-bold text-gray-700'>
               Unit
             </TableCell>
+            <TableCell align='right' className='font-bold text-gray-700'>
+              Wallet
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -69,6 +73,9 @@ const SensorsTable = () => {
               </TableCell>
               <TableCell align='right' className='py-3 px-4 text-gray-600'>
                 {sensor.unit}
+              </TableCell>
+              <TableCell align='right' className='py-3 px-4 text-gray-600'>
+                {sensor.walllet}
               </TableCell>
             </TableRow>
           ))}
