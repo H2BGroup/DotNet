@@ -22,7 +22,7 @@ code {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(calc(115vw));
+    transform: translateX(calc(110vw));
   }
 }
 
@@ -45,11 +45,11 @@ code {
 }
 
 .animate-moveCar {
-  animation: moveCar 6s ease-in-out forwards;
+  animation: moveCar 5.2s ease-in forwards;
 }
 
 .animate-movePoliceCar {
-  animation: movePoliceCar 6s ease-in-out forwards;
+  animation: movePoliceCar 5.2s ease-in forwards;
 }
 
 .animate-moveCarIn {

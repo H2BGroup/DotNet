@@ -34,7 +34,7 @@ const PoliceChase = () => {
       />
       {carVisible && (
         <div
-          className='absolute top-0 left-[-80px] animate-movePoliceCar'
+          className='absolute top-0 left-[-180px] animate-movePoliceCar'
           onAnimationEnd={handleAnimationEnd}
         >
           <img src='/police-car.svg' alt='Police Car' className='w-12 h-12' />
