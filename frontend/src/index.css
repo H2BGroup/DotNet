@@ -17,3 +17,41 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+@keyframes moveCar {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(115vw));
+  }
+}
+
+@keyframes movePoliceCar {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(115vw));
+  }
+}
+
+@keyframes moveCarIn {
+  0% {
+    transform: translateX(-10vw);
+  }
+  100% {
+    transform: translateX(0vw);
+  }
+}
+
+.animate-moveCar {
+  animation: moveCar 6s ease-in-out forwards;
+}
+
+.animate-movePoliceCar {
+  animation: movePoliceCar 6s ease-in-out forwards;
+}
+
+.animate-moveCarIn {
+  animation: moveCarIn 1s ease-in-out forwards;
+}
